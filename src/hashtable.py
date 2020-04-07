@@ -54,10 +54,19 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
-
-
-
+        # #increase size
+        # self.size += 1
+        #get the index  from hash
+        index = self._hash_mod(key)
+        # print(index)
+        # select = self.storage[index]
+        # print(select)
+        # check if the spot is available and add it
+        if self.storage[index] is not None:
+            print("something is there")
+            return
+    
+        self.storage[index] = LinkedPair(key,value)
     def remove(self, key):
         '''
         Remove the value stored with the given key.
@@ -66,9 +75,13 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
-
-
+        #need to get index from hash
+        index = self._hash_mod(key)
+        # check if something is there
+        if self.storage[index] is None:
+            print("not found")
+        #if there is something get rid of it
+        self.storage[index] = None
     def retrieve(self, key):
         '''
         Retrieve the value stored with the given key.
@@ -77,7 +90,16 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        
+        #get index
+        index = self._hash_mod(key)
+        # check if something is there
+        if self.storage[index] is None:
+            print("not found")
+        
+
+        #grabing value
+        return self.storage[index].value
 
 
     def resize(self):
@@ -87,7 +109,14 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        #need to store old stuff
+
+        old_stuff = self.storage
+        #double new storage
+        self.capacity = self.capacity * 2
+       
+        for item in old_stuff:
+            self.insert(item.key, item.value)
 
 
 
