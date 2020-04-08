@@ -6,6 +6,7 @@ class LinkedPair:
         self.key = key
         self.value = value
         self.next = None
+    
 
 class HashTable:
     '''
@@ -54,19 +55,46 @@ class HashTable:
 
         Fill this in.
         '''
-        # #increase size
-        # self.size += 1
+       
         #get the index  from hash
         index = self._hash_mod(key)
-        # print(index)
-        # select = self.storage[index]
-        # print(select)
+        
         # check if the spot is available and add it
         if self.storage[index] is not None:
             print("something is there")
-            return
+            #need a new node
+            newNode = LinkedPair(key, value)
+            #need to point to the next node
+            newNode.next = self.storage[index]
+            #store it
+            self.storage[index] = newNode
+            # print("value of node", newNode.value )
+        else:
+            self.storage[index] = LinkedPair(key,value)
+
+
+        #    # #increase size
+        # # self.size += 1
+        # #get the index  from hash
+        # index = self._hash_mod(key)
+        # # print(index)
+        # # select = self.storage[index]
+        # # print(select)
+        # # check if the spot is available and add it
+        # if self.storage[index] is not None:
+        #     #collision
+        #     print("something is there")
+        #     #need to create a new node
+        #     # newNode = LinkedPair(key, value)
+        #     # #point to the next node
+        #     # # newNode.next = self.storage[index]
+        #     # print(newNode)
+        #     # self.storage[index] = newNode
+        #     return
     
-        self.storage[index] = LinkedPair(key,value)
+        # self.storage[index] = LinkedPair(key,value)
+
+
     def remove(self, key):
         '''
         Remove the value stored with the given key.
@@ -81,7 +109,8 @@ class HashTable:
         if self.storage[index] is None:
             print("not found")
         #if there is something get rid of it
-        self.storage[index] = None
+        else:
+            self.storage[index] = None
     def retrieve(self, key):
         '''
         Retrieve the value stored with the given key.
@@ -91,15 +120,17 @@ class HashTable:
         Fill this in.
         '''
         
-        #get index
         index = self._hash_mod(key)
-        # check if something is there
-        if self.storage[index] is None:
-            print("not found")
-        
+        current_key = self.storage[index]
+     
+        while current_key:
+            if current_key.key != key:
+                current_key = current_key.next
+            else:
+            
+                return current_key.value
 
-        #grabing value
-        return self.storage[index].value
+        return None
 
 
     def resize(self):
@@ -111,13 +142,27 @@ class HashTable:
         '''
         #need to store old stuff
 
-        old_stuff = self.storage
-        #double new storage
-        self.capacity = self.capacity * 2
-       
-        for item in old_stuff:
-            self.insert(item.key, item.value)
+        # old_stuff = self.storage
+        # #double new storage
+        # self.capacity = self.capacity * 2
+        # self.storage = self.capacity * [None]
 
+        # for item in old_stuff:
+        #     print(item)
+        #     current_item = item
+        #     while current_item is not None:
+
+        #         self.insert(current_item.key, current_item.value)
+        #         current_item = current_item.next
+        self.capacity *= 2
+        old_stuff = self.storage
+        self.storage = self.capacity * [None]
+
+        for pervious_keys in old_stuff:
+            current_key = pervious_keys
+            while current_key is not None:
+                self.insert(current_key.key, current_key.value)
+                current_key = current_key.next
 
 
 if __name__ == "__main__":
@@ -125,15 +170,19 @@ if __name__ == "__main__":
 
     ht.insert("line_1", "Tiny hash table")
     ht.insert("line_2", "Filled beyond capacity")
+    print("2",ht.retrieve("line_2"))
     ht.insert("line_3", "Linked list saves the day!")
 
     print("")
 
     # Test storing beyond capacity
-    print(ht.retrieve("line_1"))
-    print(ht.retrieve("line_2"))
-    print(ht.retrieve("line_3"))
-
+    print("1",ht.retrieve("line_1"))
+    print("2",ht.retrieve("line_2"))
+    print("3", ht.retrieve("line_3"))
+    print(ht.remove("line_3"))
+    print("3", ht.retrieve("line_3"))
+    print("2", ht.retrieve("line_2"))
+    print("1",ht.retrieve("line_1"))
     # Test resizing
     old_capacity = len(ht.storage)
     ht.resize()
